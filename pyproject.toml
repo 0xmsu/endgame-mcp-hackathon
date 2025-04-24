@@ -1,0 +1,13 @@
+[project]
+name = "endgame-mcp-hackathon"
+version = "0.1.0"
+description = "TaoStats MCP Server"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.28.1",
+    "mcp[cli]>=1.6.0",
+    "pydantic>=2.11.3",
+    "pytest>=8.3.5",
+    "pytest-mock>=3.14.0",
+]
