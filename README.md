@@ -50,27 +50,21 @@ source .venv/bin/activate
 **3. Initialize the project directory**
 
 ```bash
-uv init
+uv sync
 ```
 
-**4. Install required dependencies**
-
-```bash
-uv add "mcp[cli]" httpx pydantic
-```
-
-**5. Get your TaoStats API key**
+**4. Get your TaoStats API key**
 
 Sign up at [TaoStats](https://taostats.io/) and get your API key from your account settings.
 
-**6. Test your MCP server**
+**5. Test your MCP server**
 
 While it's not required to run the server continuously, performing a quick test ensures that your setup is correct.
 
 To test your server, execute the following command:
 
 ```bash
-uv run mcp src/server.py
+uv run mcp run src/server.py
 ```
 
 This command starts the server and waits for connections. Once you've confirmed it's running correctly, you can stop it by pressing `Ctrl+C`.
@@ -84,7 +78,7 @@ uv run mcp dev src/server.py
 
 After this verification, you don't need to run the server manually. As long as the necessary files are present on your local machine, your MCP client (such as Claude Desktop or Cursor) will handle starting the server as needed.
 
-**7. Get the full path to your `uv` executable:**
+**6. Get the full path to your `uv` executable:**
 
 ```bash
 which uv
