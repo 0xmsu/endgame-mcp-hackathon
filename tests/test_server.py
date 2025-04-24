@@ -1,4 +1,3 @@
-import pytest
 import httpx
 import sys
 from pathlib import Path

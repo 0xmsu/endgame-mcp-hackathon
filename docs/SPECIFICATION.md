@@ -118,43 +118,14 @@ The TaoStats MCP server manages context effectively through:
 
 To integrate with the TaoStats MCP server:
 
-1. **Client Setup**: Initialize an MCP client pointing to the server:
-   ```python
-   from mcp import Client
-   client = Client("TaoStats")
-   ```
+1. **Client Setup**: Initialize an MCP client pointing to the server.
 
 2. **Tool Discovery**: Explore available tools programmatically or via documentation.
 
-3. **Tool Invocation**: Call tools with appropriate parameters:
-   ```python
-   # Get current TAO price
-   price_data = client.get_price_data(data_type="current")
-   
-   # Get recent blocks
-   blocks = client.get_blocks_data(limit=10, order="block_number_desc")
-   ```
+3. **Tool Invocation**: Call tools with appropriate parameters.
 
-4. **Error Handling**: Implement appropriate error handling in client code:
-   ```python
-   try:
-       result = client.get_wallet_data(data_type="account", address="5Hd2...")
-   except ValueError as e:
-       print(f"Parameter error: {e}")
-   except Exception as e:
-       print(f"Request failed: {e}")
-   ```
+4. **Error Handling**: Implement appropriate error handling in client code.
 
-5. **Performance Optimization**: Use parameter filtering to reduce response size and improve performance:
-   ```python
-   # Request only the needed data with appropriate filters
-   transfers = client.get_wallet_data(
-       data_type="transfers",
-       from_address="5ABC...",
-       timestamp_start=1672531200,
-       timestamp_end=1675209600,
-       limit=50
-   )
-   ```
+5. **Performance Optimization**: Use parameter filtering to reduce response size and improve performance.
 
 6. **Respect Rate Limits**: The server implements caching to help with rate limits, but clients should still implement reasonable request patterns.

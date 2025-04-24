@@ -113,82 +113,133 @@ class PriceData(BaseModel):
 
 ### Installation
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/masa-finance/endgame-mcp-hackathon.git
-   cd endgame-mcp-hackathon
-   ```
+## Server Setup Instructions
 
-2. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+This step is **required for both Claude Desktop and Cursor** — the server is what enables access to the TaoStats tools.
 
-3. Set your TaoStats API key:
-   ```
-   export TAOSTATS_API_KEY="your-api-key-here"
-   ```
+**1. Clone the Repo and Navigate to your project directory**
 
-### Running the Server
-
-Start the server with:
-```
-python src/server.py
+```bash
+git clone https://github.com/0xmsu/endgame-mcp-hackathon
+cd endgame-mcp-hackathon
 ```
 
-The server will begin listening for MCP client connections with a 180-second request timeout.
+**2. Create and activate a virtual environment**
+
+```bash
+uv venv
+source .venv/bin/activate
+```
+
+**3. Initialize the project directory**
+
+```bash
+uv init
+```
+
+**4. Install required dependencies**
+
+```bash
+uv add "mcp[cli]" httpx pydantic
+```
+
+**5. Get your TaoStats API key**
+
+Sign up at [TaoStats](https://taostats.io/) and get your API key from your account settings.
+
+**6. Test your MCP server**
+
+While it's not required to run the server continuously, performing a quick test ensures that your setup is correct.
+
+To test your server, execute the following command:
+
+```bash
+uv run mcp src/server.py
+```
+
+This command starts the server and waits for connections. Once you've confirmed it's running correctly, you can stop it by pressing `Ctrl+C`.
+
+
+To use MCP-Inspector 
+```bash
+uv run mcp dev src/server.py
+```
+
+
+After this verification, you don't need to run the server manually. As long as the necessary files are present on your local machine, your MCP client (such as Claude Desktop or Cursor) will handle starting the server as needed.
+
+**7. Get the full path to your `uv` executable:**
+
+```bash
+which uv
+```
 
 ## Usage
 
-### Connecting with an MCP Client
+### Configure Claude Desktop
 
-To connect to the server from Python code:
+**Run the following command, this will open your Claude configuration file**
 
-```python
-from mcp import Client
-
-client = Client("TaoStats")
+```bash
+code ~/Library/Application\ Support/Claude/claude_desktop_config.json
 ```
 
-### Using Tools
+**Update with this:**
 
-Once connected, you can use the tools directly:
-
-```python
-# Get current TAO price
-price_data = client.get_price_data(data_type="current")
-
-# Get account information
-account_data = client.get_wallet_data(
-    data_type="account", 
-    address="5Hd2ze5ug8n1bo3UCAcQsf66VNjKqGos8u6apNfzcU86pg4N"
-)
-
-# Get trading view chart data
-chart_data = client.get_trading_view_data(
-    symbol="SUB-1", 
-    resolution="1D",
-    from_timestamp=1672531200,
-    to_timestamp=1675209600
-)
-
-# Get recent blockchain blocks
-blocks = client.get_blocks_data(limit=10, order="block_number_desc")
-
-# Get network statistics
-stats = client.get_network_stats(data_type="current")
+```json
+{
+    "mcpServers": {
+        "taostats": {
+            "command": "FULL_PATH_TO_UV",  // Replace with output from `which uv`
+            "args": [
+                "--directory",
+                "/path/to/endgame-mcp-hackathon",  // Replace with the path to your local clone
+                "run",
+                "src/server.py"
+            ],
+            "env": {
+                "TAOSTATS_API_KEY": "your-taostats-api-key"  // Replace with your actual API key
+            }
+        }
+    }
+}
 ```
+
+Replace "FULL_PATH_TO_UV" with the full path you got from `which uv`.
+
+For instance:
+```
+/Users/username/.local/bin/uv
+```
+
+**Open Claude desktop**
+
+**Look for the hammer icon — this confirms your MCP server is running. You'll now see TaoStats tools available inside Claude.**
+
+![Claude with TaoStats tools](img/hammer.png)
+![Claude with TaoStats tools-2](img/available-tools.png)
+
+### Configure Cursor
+
+You can either update the config file manually or use the built-in UI.
+
+* Go to **Cursor Settings**
+* Navigate to your Cursor settings and select `add new global MCP server`
+
+![Cursor UI configuration](img/cursor-mcp.png)
+![Cursor UI configuration](img/mcpserveradded.png)
+
+
+**Use Agent Mode**
+
+In Cursor, make sure you're using **Agent Mode** in the chat. Agents have the ability to use any MCP tool — including TaoStats tools. 
+
+
 
 ### Error Handling
 
 The server implements robust error handling for API requests, but clients should also implement appropriate error handling:
 
-```python
-try:
-    price_data = client.get_price_data(data_type="current")
-except Exception as e:
-    print(f"Error fetching price data: {e}")
-```
 
 ## Performance
 
@@ -207,7 +258,6 @@ The implementation includes an intelligent caching system:
 The server implements a comprehensive timeout strategy:
 - Connection timeout: 5 seconds
 - Read/write/pool timeout: 120 seconds each
-- Overall request timeout: 180 seconds
 
 ### Error Resilience
 The API client catches and handles exceptions gracefully to prevent server crashes:
